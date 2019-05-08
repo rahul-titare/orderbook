@@ -56,6 +56,7 @@ Execute Orderbook
     a. {"instrumentId":"ABC","quantity":88,"price":100}
 
 5. Sample response body
+
     a. {"status":"success","data":{"orderBookedExecuted":false}}
 
 ------------------------------------------------------------------------------------------------
@@ -74,8 +75,11 @@ Get ALL/VALID/INVALID order statics statistics
 
 1. Method: GET
 2. URL
+
   orderbook/stats/{instrumentId}/ALL
+  
   orderbook/stats/{instrumentId}/VALID
+  
   orderbook/stats/{instrumentId}/INVALID
 
 3. Sample response body
