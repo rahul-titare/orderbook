@@ -7,60 +7,76 @@ Orderbook Assignment
 
 REST API
 
-1. Open Orderbook
-Method: GET
-URL: orderbook/open/{instrumentId}
-Sample response body
-1. {"status":"success"}
-2. {"status":"error","errorCode":"ORDER_BOOK_ALREADY_OPENED"}
+Open Orderbook
+
+1. Method: GET
+2. URL: orderbook/open/{instrumentId}
+3. Sample response body
+
+   a. {"status":"success"}
+   
+   b. {"status":"error","errorCode":"ORDER_BOOK_ALREADY_OPENED"}
 
 ------------------------------------------------------------------------------------------------
 
-2. Add Order
-METHOD: POST
-Request Content-Type: application/json
-URL: orderbook/order/add
-Sample request Body
-{"instrumentId":"ABC", "quantity":43, "price":100, "orderType":"LIMIT"}
+Add Order
 
-Sample response body
-{"status":"success","data":{"orderId":"cc8f9293-3d6e-4ef7-9cea-aaef70bd01f8"}}
+1. Method: POST
+2. Request Content-Type: application/json
+3. URL: orderbook/order/add
+4. Sample request Body
 
-------------------------------------------------------------------------------------------------
+    a. {"instrumentId":"ABC", "quantity":43, "price":100, "orderType":"LIMIT"}
 
-3. Close Orderbook
-Method: GET
-URL: orderbook/close/{instrumentId}
-Sample response body
-1. {"status":"success"}
-2. {"status":"error","errorCode":"ORDER_BOOK_ALREADY_CLOSED"}
+5. Sample response body
+
+    a. {"status":"success","data":{"orderId":"cc8f9293-3d6e-4ef7-9cea-aaef70bd01f8"}}
 
 ------------------------------------------------------------------------------------------------
 
-4. Execute Orderbook
-METHOD: POST
-Request Content-Type: application/json
-URL: orderbook/execute
-Sample request body
-{"instrumentId":"ABC","quantity":88,"price":100}
+Close Orderbook
 
-Sample response body
-{"status":"success","data":{"orderBookedExecuted":false}}
+1. Method: GET
+2. URL: orderbook/close/{instrumentId}
+3. Sample response body
+
+    a. {"status":"success"}
+    
+    b. {"status":"error","errorCode":"ORDER_BOOK_ALREADY_CLOSED"}
 
 ------------------------------------------------------------------------------------------------
 
-5. Get Order details
-Method: GET
-URL: orderbook/order/get/{orderId from Add Order API response}
-Sample response body
+Execute Orderbook
+
+1. Method: POST
+2. Request Content-Type: application/json
+3. URL: orderbook/execute
+4. Sample request body
+
+    a. {"instrumentId":"ABC","quantity":88,"price":100}
+
+5. Sample response body
+    a. {"status":"success","data":{"orderBookedExecuted":false}}
+
+------------------------------------------------------------------------------------------------
+
+Get Order details
+
+1. Method: GET
+2. URL: orderbook/order/get/{orderId from Add Order API response}
+3. Sample response body
+
 {"status":"success","data":{"quantity":43,"executionQuantity":0,"price":22.0,"executionPrice":0.0,"status":null,"type":"LIMIT"}}
 
 ------------------------------------------------------------------------------------------------
 
-6. Get ALL/VALID/INVALID order statics statistics
-Method: GET
-URL: orderbook/stats/{instrumentId}/ALL
-URL: orderbook/stats/{instrumentId}/VALID
-URL: orderbook/stats/{instrumentId}/INVALID
-Sample response body
+Get ALL/VALID/INVALID order statics statistics
+
+1. Method: GET
+2. URL
+  orderbook/stats/{instrumentId}/ALL
+  orderbook/stats/{instrumentId}/VALID
+  orderbook/stats/{instrumentId}/INVALID
+
+3. Sample response body
 {"status":"success","data":{"instrumentId":"ABC","numOrders":2,"demand":86,"maxOrder":{"orderId":"e64f8a0f-31e1-424e-b8bf-ff466a3858de","quantity":43,"entryDate":"2019-05-08T22:48:15.188","price":22.0,"orderType":"LIMIT"},"minOrder":{"orderId":"e64f8a0f-31e1-424e-b8bf-ff466a3858de","quantity":43,"entryDate":"2019-05-08T22:48:15.188","price":22.0,"orderType":"LIMIT"},"firstOrder":{"orderId":"e64f8a0f-31e1-424e-b8bf-ff466a3858de","quantity":43,"entryDate":"2019-05-08T22:48:15.188","price":22.0,"orderType":"LIMIT"},"lastOrder":{"orderId":"cc8f9293-3d6e-4ef7-9cea-aaef70bd01f8","quantity":43,"entryDate":"2019-05-08T22:48:23.736","price":22.0,"orderType":"LIMIT"},"limitBreakDown":[{"price":22.0,"demand":86}]}}
