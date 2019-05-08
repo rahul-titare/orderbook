@@ -168,7 +168,7 @@ $(document).ready(function(){
 		cache:false,
 		success:function(data){
 			if(data.status == 'success'){
-				alert("success orderbook closed:" + data.data.orderBookedClosed);						
+				alert("success orderbook executed:" + data.data.orderBookedExecuted);						
 			}else{
 				alert(data.errorCode)
 			}

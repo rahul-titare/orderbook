@@ -35,7 +35,7 @@ public class ExecutionController {
         try {
 			boolean isClosed =  bookService.addExecution(executionRequest);
 			resp.success();
-			resp.setData(Collections.singletonMap("orderBookedClosed", isClosed));
+			resp.setData(Collections.singletonMap("orderBookedExecuted", isClosed));
 		} catch (ApiException e) {
 			resp.error(e.getErrorCode());
 		}
