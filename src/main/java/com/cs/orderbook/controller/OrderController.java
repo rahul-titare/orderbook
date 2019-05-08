@@ -45,7 +45,7 @@ public class OrderController {
     }
     
     @GetMapping("/get/{orderId}")
-    public ApiResponse addOrder(@PathVariable("orderId") String orderId){
+    public ApiResponse getOrder(@PathVariable("orderId") String orderId){
     	ApiResponse resp = new ApiResponse();
     	try {
     		resp.setData(bookService.fetchOrder(orderId));
