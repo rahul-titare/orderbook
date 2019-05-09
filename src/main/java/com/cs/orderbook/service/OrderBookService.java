@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.function.Consumer;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,6 +19,7 @@ import com.cs.orderbook.beans.Order;
 import com.cs.orderbook.beans.OrderBook;
 import com.cs.orderbook.beans.OrderBookStatus;
 import com.cs.orderbook.beans.OrderDetails;
+import com.cs.orderbook.beans.OrderStatus;
 import com.cs.orderbook.beans.OrderType;
 import com.cs.orderbook.beans.OrderbookStatistics;
 import com.cs.orderbook.beans.StatsType;
@@ -57,24 +59,33 @@ public class OrderBookService {
 
     public void closeOrderBook(String instrumentId) throws OrderBookException{
     	LOGGER.info("closing orderbook for instrumentId:{}", instrumentId);
-    	orderBookDAO.closeOrderBook(instrumentId);
+    	OrderBook obook = orderBookDAO.getOrderBook(instrumentId);
+    	if(obook.getStatus() == OrderBookStatus.OPEN) {
+    		obook.setStatus(OrderBookStatus.CLOSED);
+    	}else {
+    		throw new OrderBookException(OrderBookException.ORDER_BOOK_NOT_OPEN);
+    	}
     }
 
     public String addOrder(AddOrderRequest addRequest) throws OrderBookException{
     	LOGGER.info("adding order in orderbook for instrumentId:{}", addRequest.getInstrumentId());
         OrderBook orderBook = orderBookDAO.getOrderBook(addRequest.getInstrumentId());
-        if(orderBook.getStatus() == OrderBookStatus.OPEN){
-            Order order = new Order(addRequest.getInstrumentId(), addRequest.getQuantity(),addRequest.getOrderType() == OrderType.MARKET?0:addRequest.getPrice(), addRequest.getOrderType());
-            orderDAO.addOrder(order);
-            LOGGER.info("order:{} added in orderbook for instrumentId:{}", order.getOrderId(), addRequest.getInstrumentId());
-            return order.getOrderId();
+        if(orderBook.getStatus() == OrderBookStatus.OPEN){            
+            Order ord = orderDAO.addOrder(addRequest);
+            LOGGER.info("order:{} added in orderbook for instrumentId:{}", ord.getOrderId(), addRequest.getInstrumentId());
+            return ord.getOrderId();
         }else {
         	throw new OrderBookException(OrderBookException.ORDER_BOOK_NOT_OPEN);
         }       
     }
     
     public OrderDetails fetchOrder(String orderId) throws OrderBookException, OrderException{        
-        return orderDAO.fetchOrder(orderId);
+        OrderDetails details = orderDAO.fetchOrder(orderId);
+        if(details == null) {
+        	throw new OrderException(OrderException.ORDER_NOT_FOUND);
+        }else {
+        	return details;
+        }
     }
 
 
@@ -86,14 +97,26 @@ public class OrderBookService {
         	if(!orderBook.isExecutionStarted()) {
     			orderBook.setExecutionStarted(true);
     			orderBook.setExecutionPrice(executionRequest.getPrice());
-    			orderDAO.updateOrderValidity(executionRequest.getInstrumentId(), executionRequest.getPrice());
-    		}    		    	
+    			Consumer<OrderDetails> validator = new Consumer<OrderDetails>() {					
+					@Override
+					public void accept(OrderDetails ordDetails) {
+						if(ordDetails.getOrder().getOrderType() == OrderType.LIMIT && ordDetails.getOrder().getPrice() < executionRequest.getPrice()) {
+			    			ordDetails.setStatus(OrderStatus.INVALID);
+			    			ordDetails.setExecutionComplete(true);			
+						}else {
+							ordDetails.setStatus(OrderStatus.VALID);
+						}
+					}
+				};
+    			orderDAO.updateOrderValidity(executionRequest.getInstrumentId(), validator);
+    		}else if(!executionRequest.getPrice().equals(orderBook.getExecutionPrice())){
+    			throw new OrderBookException(OrderBookException.EXECUTION_PRICE_DIFF);
+    		}
         	boolean isOrderBookExecuted = executor.execute(executionRequest);
             if(isOrderBookExecuted){
             	orderBook.setStatus(OrderBookStatus.EXECUTED);
             	LOGGER.info("orderbook instrumentId:{} executed", executionRequest.getInstrumentId());
-            }
-            orderBookDAO.updateOrderBookDetails(orderBook);
+            }            
             return isOrderBookExecuted;           	
         }else if(orderBook.getStatus() == OrderBookStatus.OPEN){
         	throw new OrderBookException(OrderBookException.ORDER_BOOK_NOT_CLOSED);
@@ -109,7 +132,7 @@ public class OrderBookService {
     public OrderbookStatistics collectStats(String instrumentId, StatsType statsType) throws OrderBookException{
     	LOGGER.info("collecting stats for instrumentId:{} statsType:{}", instrumentId, statsType);
     	OrderBook book = orderBookDAO.getOrderBook(instrumentId);    	
-    	List<Order> resultList = null;
+    	List<OrderDetails> resultList = null;
     	if(statsType == StatsType.VALID) {
     		resultList = orderDAO.getAllValidOrders(instrumentId);
     	}else if(statsType == StatsType.INVALID) {
@@ -120,28 +143,28 @@ public class OrderBookService {
     	OrderbookStatistics stats = new OrderbookStatistics();
     	stats.setInstrumentId(book.getInstrumentId());    	    	
     	long numOrders = resultList.size();
-    	Order ord = numOrders>0?resultList.get(0):null;
+    	Order ord = numOrders>0?resultList.get(0).getOrder():null;
     	Order minOrder = ord;
     	Order maxOrder = ord;
     	Order firstOrder = ord;
     	Order lastOrder = ord;
     	long demand = 0;
     	Map<Double, Long> priceDemand = new HashMap<>();
-    	for(Order order : resultList) {    		
-    		if(order.getQuantity() < minOrder.getQuantity()) {
-    			minOrder = order;
+    	for(OrderDetails order : resultList) {    		
+    		if(order.getOrder().getQuantity() < minOrder.getQuantity()) {
+    			minOrder = order.getOrder();
     		}
-    		if(order.getQuantity() > maxOrder.getQuantity()) {
-    			maxOrder = order;
+    		if(order.getOrder().getQuantity() > maxOrder.getQuantity()) {
+    			maxOrder = order.getOrder();
     		}
-    		if(order.getEntryDate().isBefore(firstOrder.getEntryDate())) {
-    			firstOrder = order;
+    		if(order.getOrder().getEntryDate().isBefore(firstOrder.getEntryDate())) {
+    			firstOrder = order.getOrder();
     		}
-    		if(order.getEntryDate().isAfter(lastOrder.getEntryDate())) {
-    			lastOrder = order;
+    		if(order.getOrder().getEntryDate().isAfter(lastOrder.getEntryDate())) {
+    			lastOrder = order.getOrder();
     		}
-    		demand += order.getQuantity();
-    		priceDemand.compute(order.getPrice(), (k, v)->v == null? order.getQuantity() : v + order.getQuantity());    		
+    		demand += order.getOrder().getQuantity();
+    		priceDemand.compute(order.getOrder().getPrice(), (k, v)->v == null? order.getOrder().getQuantity() : v + order.getOrder().getQuantity());    		
     	}	
 		stats.setNumOrders(numOrders);
 		stats.setDemand(demand);

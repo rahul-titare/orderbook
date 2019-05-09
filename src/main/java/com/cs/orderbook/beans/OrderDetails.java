@@ -1,41 +1,41 @@
 package com.cs.orderbook.beans;
 
 public class OrderDetails {
-
 	
-	long quantity;
-	long executionQuantity;
-	double price;
-	double executionPrice;
-	OrderStatus status;
-	OrderType type;
+	private Order order;
+	private Long executionQuantity = 0L;
+	private boolean isExecutionComplete;
+	private OrderStatus status;
 	
-	public OrderDetails(long quantity, long executionQuantity, double price, double executionPrice, OrderStatus orderStatus, OrderType type) {		
-		this.status = orderStatus;
-		this.quantity = quantity;
+	public OrderDetails(Order order) {
+		this.order = order;
+	}
+	public Order getOrder() {
+		return order;
+	}
+	
+	public Long getExecutionQuantity() {
+		return executionQuantity;
+	}
+	public void setExecutionQuantity(Long executionQuantity) {
 		this.executionQuantity = executionQuantity;
-		this.price = price;
-		this.executionPrice = executionPrice;
-		this.type = type;
+	}
+	public boolean isExecutionComplete() {
+		return isExecutionComplete;
+	}
+	public void setExecutionComplete(boolean isExecutionComplete) {
+		this.isExecutionComplete = isExecutionComplete;
 	}
 	public OrderStatus getStatus() {
 		return status;
 	}
-	public long getQuantity() {
-		return quantity;
-	}
-	public double getPrice() {
-		return price;
-	}
-	public double getExecutionPrice() {
-		return executionPrice;
-	}
-	public long getExecutionQuantity() {
-		return executionQuantity;
+	public void setStatus(OrderStatus status) {
+		this.status = status;
 	}
 	
-	public OrderType getType() {
-		return type;
+	public long getRemainingQuantity() {
+		return order.getQuantity() - executionQuantity;
 	}
-	
+    
+    
 }

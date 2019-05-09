@@ -1,70 +1,36 @@
 package com.cs.orderbook.beans;
 
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-public class OrderbookStatistics {
-
-	public static class OrderDetails{
-		String orderId;
-	    long quantity;
-	    LocalDateTime entryDate;	    
-	    double price;
-	    OrderType orderType;
-		public OrderDetails(String orderId, long quantity, LocalDateTime entryDate, double price, OrderType orderType) {
-			super();
-			this.orderId = orderId;
-			this.quantity = quantity;
-			this.entryDate = entryDate;
-			this.price = price;
-			this.orderType = orderType;
-		}
-		public String getOrderId() {
-			return orderId;
-		}
-		public long getQuantity() {
-			return quantity;
-		}
-		public LocalDateTime getEntryDate() {
-			return entryDate;
-		}
-		public double getPrice() {
-			return price;
-		}
-		public OrderType getOrderType() {
-			return orderType;
-		}
-		
-		
-	}
+public class OrderbookStatistics {	
 	
-	public static class DemandPrice{
-		double price;
-		long demand;
+	private static class DemandPrice{
+		Double price;
+		Long demand;
 		public DemandPrice(double price, long demand) {
 			super();
 			this.price = price;
 			this.demand = demand;
 		}
-		public double getPrice() {
+		public Double getPrice() {
 			return price;
 		}
-		public long getDemand() {
+		public Long getDemand() {
 			return demand;
 		}
 		
 	}
 	
-	String instrumentId;
-	long numOrders;
-	long demand;
-	OrderDetails maxOrder;
-	OrderDetails minOrder;
-	OrderDetails firstOrder;
-	OrderDetails lastOrder;
-	List<DemandPrice> limitBreakDown;
+	private String instrumentId;
+	private long numOrders;
+	private long demand;
+	private Order maxOrder;
+	private Order minOrder;
+	private Order firstOrder;
+	private Order lastOrder;
+	private List<DemandPrice> limitBreakDown;
 	
 	public OrderbookStatistics() {
 		limitBreakDown = new ArrayList<>();
@@ -92,37 +58,29 @@ public class OrderbookStatistics {
 	public void setDemand(long demand) {
 		this.demand = demand;
 	}
-	public OrderDetails getMaxOrder() {
+	public Order getMaxOrder() {
 		return maxOrder;
 	}
-	public void setMaxOrder(Order order) {
-		if(order!=null) {
-			this.maxOrder = new OrderDetails(order.getOrderId(), order.getQuantity(), order.getEntryDate(), order.getPrice(), order.getOrderType());
-		}
+	public void setMaxOrder(Order order) {		
+		this.maxOrder = order;		
 	}
-	public OrderDetails getMinOrder() {
+	public Order getMinOrder() {
 		return minOrder;
 	}
 	public void setMinOrder(Order order) {
-		if(order!=null) {
-			this.minOrder = new OrderDetails(order.getOrderId(), order.getQuantity(), order.getEntryDate(), order.getPrice(), order.getOrderType());
-		}
+		this.minOrder = order;		
 	}
-	public OrderDetails getFirstOrder() {
+	public Order getFirstOrder() {
 		return firstOrder;
 	}
 	public void setFirstOrder(Order order) {
-		if(order!=null) {
-			this.firstOrder = new OrderDetails(order.getOrderId(), order.getQuantity(), order.getEntryDate(), order.getPrice(), order.getOrderType());
-		}
+		this.firstOrder = order;		
 	}
-	public OrderDetails getLastOrder() {
+	public Order getLastOrder() {
 		return lastOrder;
 	}
 	public void setLastOrder(Order order) {
-		if(order!=null) {
-			this.lastOrder = new OrderDetails(order.getOrderId(), order.getQuantity(), order.getEntryDate(), order.getPrice(), order.getOrderType());
-		}
+		this.lastOrder = order;	
 	}
 	
 	public List<DemandPrice> getLimitBreakDown() {

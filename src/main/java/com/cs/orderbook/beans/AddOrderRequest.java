@@ -6,14 +6,14 @@ import org.hibernate.validator.constraints.Range;
 
 public class AddOrderRequest {
 	@NotBlank
-	String instrumentId;
+	private String instrumentId;
 	@Range(min = 1, max = 1000000)
-    long quantity;
+	private Long quantity;
 	@Range(min = 0, max = 1000000)
-    double price;
+	private Double price;
     OrderType orderType;
 
-    public AddOrderRequest(String instrumentId, long quantity, double price, OrderType orderType){
+    public AddOrderRequest(String instrumentId, Long quantity, Double price, OrderType orderType){
     	this.instrumentId = instrumentId;
         this.quantity = quantity;
         this.price = price;
@@ -25,19 +25,19 @@ public class AddOrderRequest {
     public void setInstrumentId(String instrumentId) {
 		this.instrumentId = instrumentId;
 	}
-    public long getQuantity() {
+    public Long getQuantity() {
         return quantity;
     }
 
-    public void setQuantity(long quantity) {
+    public void setQuantity(Long quantity) {
         this.quantity = quantity;
     }
 
-    public double getPrice() {
+    public Double getPrice() {
         return price;
     }
 
-    public void setPrice(double price) {
+    public void setPrice(Double price) {
         this.price = price;
     }
 

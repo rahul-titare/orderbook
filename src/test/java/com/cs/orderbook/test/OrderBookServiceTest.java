@@ -15,9 +15,9 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.cs.orderbook.beans.AddOrderRequest;
 import com.cs.orderbook.beans.ExecutionRequest;
-import com.cs.orderbook.beans.Order;
 import com.cs.orderbook.beans.OrderBook;
 import com.cs.orderbook.beans.OrderBookStatus;
+import com.cs.orderbook.beans.OrderDetails;
 import com.cs.orderbook.beans.OrderStatus;
 import com.cs.orderbook.beans.OrderType;
 import com.cs.orderbook.config.AppConfig;
@@ -44,12 +44,12 @@ public class OrderBookServiceTest {
     	String instrumentId = "ABC";
         bookService.openOrderBook(instrumentId);
         OrderBook book = bookService.getOrderBook(instrumentId);
-        bookService.addOrder(new AddOrderRequest(instrumentId, 90, 34, OrderType.LIMIT));
-        bookService.addOrder(new AddOrderRequest(instrumentId, 10, 135, OrderType.LIMIT));
+        bookService.addOrder(new AddOrderRequest(instrumentId, 90L, 34D, OrderType.LIMIT));
+        bookService.addOrder(new AddOrderRequest(instrumentId, 10L, 135D, OrderType.LIMIT));
         bookService.closeOrderBook(instrumentId);
         bookService.addExecution(new ExecutionRequest(instrumentId, 90,100));       
         
-        List<Order> allOrders = orderDAO.getAllOrders(instrumentId);
+        List<OrderDetails> allOrders = orderDAO.getAllOrders(instrumentId);
         assertEquals(allOrders.get(0).getStatus(), OrderStatus.VALID);
         assertEquals(allOrders.get(0).getStatus(), OrderStatus.INVALID);
         

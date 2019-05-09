@@ -180,14 +180,14 @@ $(document).ready(function(){
 	$("#get_order_content").find("button").click(function(){
 		var frm = $("#get_order_content");
 		var oid = frm.find("select[name=orderId]").val();
-		
+		$("#order_content").html("");
 		$.ajax({
 		type:"get",				
 		url:"orderbook/order/get/" + oid,
 		cache:false,
 		success:function(data){
 			if(data.status == 'success'){				
-				alert(JSON.stringify(data.data))
+				$("#order_content").html(JSON.stringify(data.data));
 			}else{
 				alert(data.errorCode)
 			}
@@ -263,6 +263,8 @@ Execution Price : <input name="price"><br/>
 <div id="get_order_content" class="content">
 Order Id : <select name="orderId"></select><br/>
 <button type="button">Submit</button>
+<br/>
+<div id="order_content"></div>
 </div>
 
 

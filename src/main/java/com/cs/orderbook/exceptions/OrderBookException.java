@@ -11,6 +11,7 @@ public class OrderBookException extends ApiException {
 	public  static final String ORDER_BOOK_NOT_CLOSED = "ORDER_BOOK_NOT_CLOSED";
 	public  static final String ORDER_BOOK_EXECUTED = "ORDER_BOOK_EXECUTED";
 	public  static final String EXECUTION_NOT_APPLIED = "EXECUTION_NOT_APPLIED";
+	public  static final String EXECUTION_PRICE_DIFF = "EXECUTION_PRICE_DIFF";
 	private String errorCode;
 	
 	public OrderBookException(String errorCode) {

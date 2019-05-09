@@ -6,11 +6,11 @@ import org.hibernate.validator.constraints.Range;
 
 public class ExecutionRequest {
 	@NotBlank
-	String instrumentId;
+	private String instrumentId;
 	@Range(min = 1, max = 1000000)
-    long quantity;
+	private Long quantity;
 	@Range(min = 0, max = 1000000)
-    double price;
+	private Double price;
 
     public ExecutionRequest(String instrumentId, long quantity, double price){
     	this.instrumentId = instrumentId;
@@ -23,19 +23,19 @@ public class ExecutionRequest {
     public void setInstrumentId(String instrumentId) {
 		this.instrumentId = instrumentId;
 	}
-    public long getQuantity() {
+    public Long getQuantity() {
         return quantity;
     }
 
-    public void setQuantity(long quantity) {
+    public void setQuantity(Long quantity) {
         this.quantity = quantity;
     }
 
-    public double getPrice() {
+    public Double getPrice() {
         return price;
     }
 
-    public void setPrice(double price) {
+    public void setPrice(Double price) {
         this.price = price;
     }
     

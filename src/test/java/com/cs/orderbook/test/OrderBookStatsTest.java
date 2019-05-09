@@ -12,8 +12,8 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.cs.orderbook.beans.AddOrderRequest;
 import com.cs.orderbook.beans.ExecutionRequest;
-import com.cs.orderbook.beans.Order;
 import com.cs.orderbook.beans.OrderBook;
+import com.cs.orderbook.beans.OrderDetails;
 import com.cs.orderbook.beans.OrderType;
 import com.cs.orderbook.beans.OrderbookStatistics;
 import com.cs.orderbook.beans.StatsType;
@@ -42,11 +42,11 @@ public class OrderBookStatsTest {
         bookService.openOrderBook(instrumentId);     
         OrderBook book = bookService.getOrderBook(instrumentId);
         
-   	 	bookService.addOrder(new AddOrderRequest(instrumentId, 10, 45, OrderType.LIMIT));   	 	
-   	 	bookService.addOrder(new AddOrderRequest(instrumentId ,100, 23,OrderType.LIMIT));   	
-		bookService.addOrder(new AddOrderRequest(instrumentId, 67, 54, OrderType.LIMIT));		
-		bookService.addOrder(new AddOrderRequest(instrumentId, 25, 50, OrderType.LIMIT));		
-		bookService.addOrder(new AddOrderRequest(instrumentId, 25, 50, OrderType.LIMIT));		
+   	 	bookService.addOrder(new AddOrderRequest(instrumentId, 10L, 45D, OrderType.LIMIT));   	 	
+   	 	bookService.addOrder(new AddOrderRequest(instrumentId ,100L, 23D,OrderType.LIMIT));   	
+		bookService.addOrder(new AddOrderRequest(instrumentId, 67L, 54D, OrderType.LIMIT));		
+		bookService.addOrder(new AddOrderRequest(instrumentId, 25L, 50D, OrderType.LIMIT));		
+		bookService.addOrder(new AddOrderRequest(instrumentId, 25L, 50D, OrderType.LIMIT));		
 		bookService.closeOrderBook(instrumentId); 
 		bookService.addExecution(new ExecutionRequest(instrumentId, 1,200)); 
 		//bookService.addExecution(new ExecutionRequest(2,100), instrumentId);
@@ -56,10 +56,10 @@ public class OrderBookStatsTest {
 		//assertEquals(book.getOrderList().get(0).getOrderId(), stats.getFirstOrder().getOrderId());
 		//assertEquals(book.getOrderList().get(4).getOrderId(), stats.getLastOrder().getOrderId());
 		
-		List<Order> allOrders = orderDAO.getAllOrders(instrumentId);
+		List<OrderDetails> allOrders = orderDAO.getAllOrders(instrumentId);
 		
-		assertEquals(allOrders.get(1).getOrderId(), stats.getMaxOrder().getOrderId());
-		assertEquals(allOrders.get(0).getOrderId(), stats.getMinOrder().getOrderId());
+		assertEquals(allOrders.get(1).getOrder().getOrderId(), stats.getMaxOrder().getOrderId());
+		assertEquals(allOrders.get(0).getOrder().getOrderId(), stats.getMinOrder().getOrderId());
        
 	}
 }

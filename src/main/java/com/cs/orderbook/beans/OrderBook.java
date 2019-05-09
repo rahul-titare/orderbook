@@ -1,11 +1,11 @@
 package com.cs.orderbook.beans;
 
-public class OrderBook implements Cloneable{	
+public class OrderBook{	
 
-    String instrumentId;
-    OrderBookStatus status;
-    boolean executionStarted;
-    double executionPrice;
+	private String instrumentId;
+	private OrderBookStatus status;
+	private boolean executionStarted;
+	private Double executionPrice;
     
     public OrderBook(String instrumentId){
         this.instrumentId = instrumentId;       
@@ -36,18 +36,11 @@ public class OrderBook implements Cloneable{
 		this.status = status;
 	}
 	
-	public void setExecutionPrice(double executionPrice) {
+	public void setExecutionPrice(Double executionPrice) {
 		this.executionPrice = executionPrice;
 	}
-	public double getExecutionPrice() {
+	public Double getExecutionPrice() {
 		return executionPrice;
 	}
-	@Override
-	public OrderBook clone() {
-		try {
-			return (OrderBook) super.clone();
-		} catch (CloneNotSupportedException e) {
-			return null;
-		}
-	}
+
 }
